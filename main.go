@@ -20,10 +20,12 @@ const (
 	defaultHost    = "127.0.0.1" // changed from 0.0.0.0 - prefer localhost-only by default for personal use
 	appName        = "sub2api"
 	appVersion     = "dev"
- {
+)
+
+func main() {
 	// Parse command-line flags
 	var (
-		host       = flag.String("host", getEnvOrDefault(Host to listen on")
+		host       = flag.String("host", getEnvOrDefault("HOST", defaultHost), "Host to listen on")
 		port       = flag.Int("port", getEnvOrDefaultInt("PORT", defaultPort), "Port to listen on")
 		configFile = flag.String("config", getEnvOrDefault("CONFIG_FILE", ""), "Path to config file")
 		version    = flag.Bool("version", false, "Print version and exit")
