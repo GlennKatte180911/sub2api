@@ -20,12 +20,10 @@ const (
 	defaultHost    = "127.0.0.1" // changed from 0.0.0.0 - prefer localhost-only by default for personal use
 	appName        = "sub2api"
 	appVersion     = "dev"
-)
-
-func main() {
+ {
 	// Parse command-line flags
 	var (
-		host       = flag.String("host", getEnvOrDefault("HOST", defaultHost), "Host to listen on")
+		host       = flag.String("host", getEnvOrDefault(Host to listen on")
 		port       = flag.Int("port", getEnvOrDefaultInt("PORT", defaultPort), "Port to listen on")
 		configFile = flag.String("config", getEnvOrDefault("CONFIG_FILE", ""), "Path to config file")
 		version    = flag.Bool("version", false, "Print version and exit")
@@ -52,9 +50,9 @@ func main() {
 	server := &http.Server{
 		Addr:         addr,
 		Handler:      router,
-		ReadTimeout:  15 * time.Second, // tightened from 30s - 15s is plenty for local use
-		WriteTimeout: 60 * time.Second, // increased write timeout to handle slow subscription fetches
-		IdleTimeout:  90 * time.Second, // bumped idle timeout for keep-alive connections
+		ReadTimeout:  15 * time.Second,  // tightened from 30s - 15s is plenty for local use
+		WriteTimeout: 60 * time.Second,  // increased write timeout to handle slow subscription fetches
+		IdleTimeout:  120 * time.Second, // increased from 90s - helps with my flaky home network
 	}
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
