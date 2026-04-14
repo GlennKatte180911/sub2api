@@ -52,9 +52,9 @@ func main() {
 	server := &http.Server{
 		Addr:         addr,
 		Handler:      router,
-		ReadTimeout:  30 * time.Second, // added timeouts to avoid hanging connections
-		WriteTimeout: 30 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		ReadTimeout:  15 * time.Second, // tightened from 30s - 15s is plenty for local use
+		WriteTimeout: 60 * time.Second, // increased write timeout to handle slow subscription fetches
+		IdleTimeout:  90 * time.Second, // bumped idle timeout for keep-alive connections
 	}
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
