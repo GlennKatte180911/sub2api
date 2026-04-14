@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/sub2api/sub2api/internal/api"
 	"github.com/sub2api/sub2api/internal/config"
@@ -49,8 +50,11 @@ func main() {
 	log.Printf("Starting %s %s on %s", appName, appVersion, addr)
 
 	server := &http.Server{
-		Addr:    addr,
-		Handler: router,
+		Addr:         addr,
+		Handler:      router,
+		ReadTimeout:  30 * time.Second, // added timeouts to avoid hanging connections
+		WriteTimeout: 30 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
