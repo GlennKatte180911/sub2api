@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	// DefaultTimeout is the default HTTP client timeout for fetching subscriptions
-	DefaultTimeout = 15 * time.Second
+	// DefaultTimeout is the default HTTP client timeout for fetching subscriptions.
+	// Increased from 15s to 30s since some subscription providers can be slow.
+	DefaultTimeout = 30 * time.Second
 	// MaxResponseSize limits the response body to 10MB
 	MaxResponseSize = 10 * 1024 * 1024
 )
@@ -97,12 +98,4 @@ func forwardHeaders(src *http.Request, dst *http.Request) {
 	allowed := []string{
 		"User-Agent",
 		"Accept",
-		"Accept-Language",
-		"Accept-Encoding",
-	}
-	for _, h := range allowed {
-		if v := src.Header.Get(h); v != "" {
-			dst.Header.Set(h, v)
-		}
-	}
-}
+		"Accept-
