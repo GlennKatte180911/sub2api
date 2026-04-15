@@ -77,8 +77,14 @@ func (h *SubscriptionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 	defer resp.Body.Close()
 
-	// Copy upstream response headers to our response
+	// Copy upstream response headers to our response.
+	// Skip the Content-Length header since we enforce our own size limit via
+	// LimitReader below; the actual bytes written may differ from what the
+	// upstream reports.
 	for key, vals := range resp.Header {
+		if strings.EqualFold(key, "Content-Length") {
+			continue
+		}
 		for _, v := range vals {
 			w.Header().Add(key, v)
 		}
@@ -95,7 +101,15 @@ func (h *SubscriptionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 // forwardHeaders copies a safe subset of request headers to the upstream request.
 func forwardHeaders(src *http.Request, dst *http.Request) {
-	allowed := []string{
+	safeHeaders := []string{
 		"User-Agent",
 		"Accept",
-		"Accept-
+		"Accept-Language",
+		"Accept-Encoding",
+	}
+	for _, h := range safeHeaders {
+		if val := src.Header.Get(h); val != "" {
+			dst.Header.Set(h, val)
+		}
+	}
+}
