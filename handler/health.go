@@ -29,9 +29,10 @@ func NewHealthHandler() *HealthHandler {
 	return &HealthHandler{}
 }
 
-// ServeHTTP handles GET /health requests and returns service status
+// ServeHTTP handles GET /health requests and returns service status.
+// Note: also accept HEAD requests so load balancers can probe without a body.
 func (h *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -47,6 +48,11 @@ func (h *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+
+	// HEAD requests must not include a body
+	if r.Method == http.MethodHead {
+		return
+	}
 
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		http.Error(w, "failed to encode response", http.StatusInternalServerError)
