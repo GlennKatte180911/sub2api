@@ -18,7 +18,7 @@ import (
 const (
 	defaultPort    = 8080
 	defaultHost    = "127.0.0.1" // changed from 0.0.0.0 - prefer localhost-only by default for personal use
-2api"
+	appName        = "sub2api"
 	appVersion     = "dev"
 )
 
@@ -53,7 +53,7 @@ func main() {
 		Addr:           addr,
 		Handler:        router,
 		ReadTimeout:    15 * time.Second,  // tightened from 30s - 15s is plenty for local use
-		WriteTimeout:   90 * time.Second,  // bumped further - some subscription sources are really slow
+		WriteTimeout:   120 * time.Second, // bumped to 120s - some subscription sources are really slow
 		IdleTimeout:    120 * time.Second, // increased from 90s - helps with my flaky home network
 		MaxHeaderBytes: 1 << 20,           // 1MB - explicit limit, default is also 1MB but good to be clear
 	}
